@@ -188,12 +188,13 @@ class TestDataGenerator:
     
     @staticmethod
     def generate_mock_graph_data(graph_id: str = None) -> Dict[str, Any]:
-        """生成虚拟图谱数据（用于图形可视化）"""
+        """生成虚拟图谱数据（用于图形可视化）- 包含600+节点用于测试"""
         if not graph_id:
             graph_id = f"mirofish_{uuid.uuid4().hex[:8]}"
         
-        # 生成节点数据
-        entities = TestDataGenerator.generate_entities(count=15)
+        # 生成600个节点数据以测试大规模图形
+        entity_count = 600
+        entities = TestDataGenerator.generate_entities(count=entity_count)
         nodes = []
         for entity in entities:
             nodes.append({
@@ -210,22 +211,31 @@ class TestDataGenerator:
                 }.get(entity.type, "#999")
             })
         
-        # 生成边数据
+        # 生成边数据 - 每个节点平均连接3个其他节点
         edges = []
         relationships = ["knows", "works_with", "collaborates", "follows", "mentions"]
-        for i in range(len(entities) - 1):
-            # 创建多个边连接
+        
+        # 创建多层次的连接
+        for i in range(len(entities)):
+            # 连接相邻节点
             edges.append({
                 "source": entities[i].id,
                 "target": entities[(i + 1) % len(entities)].id,
                 "relationship": relationships[i % len(relationships)]
             })
-            # 添加一些额外的边以增加密度
+            # 连接间隔2个节点的节点
             if i < len(entities) - 2:
                 edges.append({
                     "source": entities[i].id,
                     "target": entities[(i + 2) % len(entities)].id,
                     "relationship": relationships[(i + 1) % len(relationships)]
+                })
+            # 连接间隔5个节点的节点
+            if i < len(entities) - 5:
+                edges.append({
+                    "source": entities[i].id,
+                    "target": entities[(i + 5) % len(entities)].id,
+                    "relationship": relationships[(i + 2) % len(relationships)]
                 })
         
         return {
