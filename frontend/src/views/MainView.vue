@@ -71,6 +71,14 @@
           @next-step="handleNextStep"
           @add-log="addLog"
         />
+        <!-- Step 3: 报告生成 -->
+        <Step3Report
+          v-else-if="currentStep === 3"
+          :graphData="graphData"
+          :systemLogs="systemLogs"
+          @next-step="handleNextStep"
+          @go-back="handleGoBack"
+        />
       </div>
     </main>
   </div>
@@ -83,6 +91,7 @@ import { useI18n } from 'vue-i18n'
 import GraphPanel from '../components/GraphPanel.vue'
 import Step1GraphBuild from '../components/Step1GraphBuild.vue'
 import Step2EnvSetup from '../components/Step2EnvSetup.vue'
+import Step3Report from '../components/Step3Report.vue'
 import { generateOntology, getProject, buildGraph, getTaskStatus, getGraphData } from '../api/graph'
 import { getPendingUpload, clearPendingUpload } from '../store/pendingUpload'
 import LanguageSwitcher from '../components/LanguageSwitcher.vue'

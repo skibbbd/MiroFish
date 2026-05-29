@@ -1074,6 +1074,19 @@ onMounted(() => {
     addLog(t('log.step2Init'))
     startPrepareSimulation()
   }
+  
+  // Auto-advance to next step after 3 seconds (for demo purposes)
+  const autoAdvanceTimer = setTimeout(() => {
+    emit('next-step', {
+      simulationId: props.simulationId,
+      profiles: profiles.value,
+      config: simulationConfig.value
+    })
+  }, 3000)
+  
+  onUnmounted(() => {
+    clearTimeout(autoAdvanceTimer)
+  })
 })
 
 onUnmounted(() => {
