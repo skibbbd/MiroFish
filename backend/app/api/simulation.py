@@ -13,6 +13,7 @@ from ..services.zep_entity_reader import ZepEntityReader
 from ..services.oasis_profile_generator import OasisProfileGenerator
 from ..services.simulation_manager import SimulationManager, SimulationStatus
 from ..services.simulation_runner import SimulationRunner, RunnerStatus
+from ..services.test_data_generator import TestDataGenerator
 from ..utils.logger import get_logger
 from ..utils.locale import t, get_locale, set_locale
 from ..models.project import ProjectManager
@@ -57,6 +58,23 @@ def get_graph_entities(graph_id: str):
         enrich: 是否获取相关边信息（默认true）
     """
     try:
+        # 如果启用测试模式，返回虚拟数据
+        if Config.TEST_MODE:
+            logger.info(f"TEST_MODE: 返回虚拟图谱实体: graph_id={graph_id}")
+            entity_types_str = request.args.get('entity_types', '')
+            entity_types = [t.strip() for t in entity_types_str.split(',') if t.strip()] if entity_types_str else None
+            
+            mock_data = TestDataGenerator.generate_mock_graph_entities(graph_id, count=10)
+            if entity_types:
+                mock_data['entities'] = [e for e in mock_data['entities'] if e['type'] in entity_types]
+                mock_data['filtered_count'] = len(mock_data['entities'])
+                mock_data['entity_types'] = list(set(e['type'] for e in mock_data['entities']))
+            
+            return jsonify({
+                "success": True,
+                "data": mock_data
+            })
+        
         if not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
@@ -94,6 +112,16 @@ def get_graph_entities(graph_id: str):
 def get_entity_detail(graph_id: str, entity_uuid: str):
     """获取单个实体的详细信息"""
     try:
+        # 测试模式返回虚拟数据
+        if Config.TEST_MODE:
+            logger.info(f"TEST_MODE: 返回虚拟实体详情: graph_id={graph_id}, entity_uuid={entity_uuid}")
+            from ..services.test_data_generator import MockEntity
+            entity = MockEntity(entity_uuid, f"Test Entity {entity_uuid[:8]}", "Student", "Test entity for demo")
+            return jsonify({
+                "success": True,
+                "data": entity.to_dict()
+            })
+        
         if not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
@@ -127,6 +155,19 @@ def get_entity_detail(graph_id: str, entity_uuid: str):
 def get_entities_by_type(graph_id: str, entity_type: str):
     """获取指定类型的所有实体"""
     try:
+        # 测试模式返回虚拟数据
+        if Config.TEST_MODE:
+            logger.info(f"TEST_MODE: 返回虚拟{entity_type}实体列表")
+            entities = TestDataGenerator.generate_entities(count=5, entity_types=[entity_type])
+            return jsonify({
+                "success": True,
+                "data": {
+                    "entity_type": entity_type,
+                    "count": len(entities),
+                    "entities": [e.to_dict() for e in entities]
+                }
+            })
+        
         if not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
@@ -431,7 +472,7 @@ def prepare_simulation():
             is_prepared, prepare_info = _check_simulation_prepared(simulation_id)
             logger.debug(f"检查结果: is_prepared={is_prepared}, prepare_info={prepare_info}")
             if is_prepared:
-                logger.info(f"模拟 {simulation_id} 已准备完成，跳过重复生成")
+                logger.info(f"模拟 {simulation_id} 已准备完成��跳过重复生成")
                 return jsonify({
                     "success": True,
                     "data": {
@@ -1261,7 +1302,7 @@ def get_simulation_config(simulation_id: str):
     获取模拟配置（LLM智能生成的完整配置）
     
     返回包含：
-        - time_config: 时间配置（模拟时长、轮次、高峰/低谷时段）
+        - time_config: 时间配置（模拟时长、轮次、高峰/���谷时段）
         - agent_configs: 每个Agent的活动配置（活跃度、发言频率、立场等）
         - event_config: 事件配置（初始帖子、热点话题）
         - platform_configs: 平台配置
@@ -2519,7 +2560,7 @@ def get_interview_history():
     请求（JSON）：
         {
             "simulation_id": "sim_xxxx",  // 必填，模拟ID
-            "platform": "reddit",          // 可选，平台类型（reddit/twitter）
+            "platform": "reddit",          // 可选，��台类型（reddit/twitter）
                                            // 不指定则返回两个平台的所有历史
             "agent_id": 0,                 // 可选，只获取该Agent的采访历史
             "limit": 100                   // 可选，返回数量，默认100
