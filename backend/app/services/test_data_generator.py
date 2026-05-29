@@ -185,3 +185,60 @@ class TestDataGenerator:
             "created_at": datetime.now().isoformat(),
             "completed_at": datetime.now().isoformat()
         }
+    
+    @staticmethod
+    def generate_mock_graph_data(graph_id: str = None) -> Dict[str, Any]:
+        """生成虚拟图谱数据（用于图形可视化）"""
+        if not graph_id:
+            graph_id = f"mirofish_{uuid.uuid4().hex[:8]}"
+        
+        # 生成节点数据
+        entities = TestDataGenerator.generate_entities(count=15)
+        nodes = []
+        for entity in entities:
+            nodes.append({
+                "id": entity.id,
+                "label": entity.name,
+                "type": entity.type,
+                "size": 20 + (hash(entity.id) % 40),
+                "color": {
+                    "Student": "#FF5722",
+                    "PublicFigure": "#2196F3",
+                    "Organization": "#4CAF50",
+                    "Location": "#FFC107",
+                    "Topic": "#9C27B0"
+                }.get(entity.type, "#999")
+            })
+        
+        # 生成边数据
+        edges = []
+        relationships = ["knows", "works_with", "collaborates", "follows", "mentions"]
+        for i in range(len(entities) - 1):
+            # 创建多个边连接
+            edges.append({
+                "source": entities[i].id,
+                "target": entities[(i + 1) % len(entities)].id,
+                "relationship": relationships[i % len(relationships)]
+            })
+            # 添加一些额外的边以增加密度
+            if i < len(entities) - 2:
+                edges.append({
+                    "source": entities[i].id,
+                    "target": entities[(i + 2) % len(entities)].id,
+                    "relationship": relationships[(i + 1) % len(relationships)]
+                })
+        
+        return {
+            "success": True,
+            "graph_id": graph_id,
+            "nodes": nodes,
+            "node_count": len(nodes),
+            "edges": edges,
+            "edge_count": len(edges),
+            "statistics": {
+                "total_nodes": len(nodes),
+                "total_edges": len(edges),
+                "entity_types": list(set(e.type for e in entities)),
+                "node_density": round(len(edges) / (len(nodes) * (len(nodes) - 1) / 2), 2) if len(nodes) > 1 else 0
+            }
+        }

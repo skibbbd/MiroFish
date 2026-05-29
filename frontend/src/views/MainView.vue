@@ -193,20 +193,33 @@ const initProject = async () => {
 
 const handleNewProject = async () => {
   const pending = getPendingUpload()
-  if (!pending.isPending || pending.files.length === 0) {
-    error.value = 'No pending files found.'
-    addLog('Error: No pending files found for new project.')
+  if (!pending.isPending) {
+    error.value = 'No simulation requirement provided.'
+    addLog('Error: No simulation requirement provided.')
+    return
+  }
+  
+  // Only require simulationRequirement, files are optional (for testing with dummy data)
+  if (!pending.simulationRequirement) {
+    error.value = 'Simulation requirement is required.'
+    addLog('Error: Simulation requirement is required.')
     return
   }
   
   try {
     loading.value = true
     currentPhase.value = 0
-    ontologyProgress.value = { message: 'Uploading and analyzing docs...' }
-    addLog('Starting ontology generation: Uploading files...')
+    ontologyProgress.value = { message: 'Generating ontology with test data...' }
+    addLog('Starting ontology generation...')
     
     const formData = new FormData()
-    pending.files.forEach(f => formData.append('files', f))
+    // Add files if they exist, otherwise API will use mock data in TEST_MODE
+    if (pending.files && pending.files.length > 0) {
+      pending.files.forEach(f => formData.append('files', f))
+      addLog(`Uploading ${pending.files.length} file(s)...`)
+    } else {
+      addLog('No files provided - using mock data for testing')
+    }
     formData.append('simulation_requirement', pending.simulationRequirement)
     
     const res = await generateOntology(formData)

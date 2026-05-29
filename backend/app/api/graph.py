@@ -672,6 +672,16 @@ def get_graph_data(graph_id: str):
     获取图谱数据（节点和边）
     """
     try:
+        # TEST_MODE: 如果启用测试模式，返回虚拟图谱数据
+        if Config.TEST_MODE:
+            logger.info(f"TEST_MODE: 返回虚拟图谱数据: {graph_id}")
+            from ..services.test_data_generator import TestDataGenerator
+            graph_data = TestDataGenerator.generate_mock_graph_data(graph_id)
+            return jsonify({
+                "success": True,
+                "data": graph_data
+            })
+        
         if not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,
