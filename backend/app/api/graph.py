@@ -451,26 +451,28 @@ def build_graph():
                 
                 # TEST_MODE: 如果启用测试模式，使用虚拟图谱数据
                 if Config.TEST_MODE:
-                    build_logger.info(f"[{task_id}] TEST_MODE: 使用虚拟图谱数据")
+                    build_logger.info(f"[{task_id}] TEST_MODE: 使用虚拟图谱数据（600+节点）")
                     import uuid
+                    import time
                     graph_id = f"test_graph_{uuid.uuid4().hex[:8]}"
                     project.graph_id = graph_id
                     
                     # 更新进度
                     for progress in [20, 40, 60, 80]:
-                        task_manager.update_task(task_id, message=f"Mock building (progress: {progress}%)", progress=progress)
-                        import time
+                        task_manager.update_task(task_id, message=f"Mock building graph with 600+ nodes (progress: {progress}%)", progress=progress)
                         time.sleep(0.1)
                     
-                    # 虚拟图谱数据
+                    # 虚拟图谱数据 - 600个节点、1800条边
+                    node_count = 600
+                    edge_count = 1800
                     graph_data = {
                         "graph_id": graph_id,
                         "name": graph_name,
-                        "node_count": 50,
-                        "edge_count": 100,
+                        "node_count": node_count,
+                        "edge_count": edge_count,
                         "entities": [
                             {"id": f"entity_{i}", "name": f"Entity {i}", "type": "Person"} 
-                            for i in range(10)
+                            for i in range(50)  # Sample of first 50 entities
                         ]
                     }
                     
@@ -480,10 +482,10 @@ def build_graph():
                     task_manager.update_task(
                         task_id,
                         status=TaskStatus.COMPLETED,
-                        message=f"Mock graph built: {graph_name}",
+                        message=f"Mock graph built successfully: {graph_name} with {node_count} nodes and {edge_count} edges",
                         progress=100
                     )
-                    build_logger.info(f"[{task_id}] TEST_MODE: 虚拟图谱构建完成")
+                    build_logger.info(f"[{task_id}] TEST_MODE: 虚拟图谱构建完成 (nodes={node_count}, edges={edge_count})")
                     return
                 
                 # 创建图谱构建服务
