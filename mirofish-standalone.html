@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiroFish - Swarm Intelligence Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        /* ===== Navigation ===== */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b35;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .github-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .github-link:hover {
+            color: #ff6b35;
+        }
+
+        .arrow {
+            margin-left: 0.25rem;
+        }
+
+        /* ===== Main Content ===== */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .hero-left {
+            flex: 1;
+            position: relative;
+        }
+
+        .tag-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .orange-tag {
+            background: #ff6b35;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .version-text {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: #e0e0e0;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #ff6b35, #ffa500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            margin-bottom: 2rem;
+        }
+
+        .hero-desc p {
+            font-size: 1.1rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+        }
+
+        .highlight-bold {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .highlight-orange {
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        .highlight-code {
+            color: #60a5fa;
+            font-family: 'Monaco', monospace;
+        }
+
+        .slogan-text {
+            color: #ff6b35;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .blinking-cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .decoration-square {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 107, 53, 0.2);
+            opacity: 0.5;
+        }
+
+        .hero-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo-container {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 107, 53, 0.1);
+            border: 2px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ff6b35;
+        }
+
+        .scroll-down-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid #ff6b35;
+            background: transparent;
+            color: #ff6b35;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-down-btn:hover {
+            background: #ff6b35;
+            color: #0a0e27;
+            transform: scale(1.1);
+        }
+
+        /* ===== Dashboard Section ===== */
+        .dashboard-section {
+            display: flex;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .left-panel, .right-panel {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            color: #ff6b35;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .section-desc {
+            color: #a0aec0;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .metrics-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            flex: 1;
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+
+        .steps-container {
+            margin-top: 2rem;
+        }
+
+        .steps-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .diamond-icon {
+            color: #ff6b35;
+        }
+
+        .workflow-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .workflow-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: rgba(255, 107, 53, 0.05);
+            border-left: 3px solid #ff6b35;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .workflow-item:hover {
+            background: rgba(255, 107, 53, 0.1);
+            transform: translateX(4px);
+        }
+
+        .step-num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ff6b35;
+            min-width: 35px;
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-desc {
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+
+        .input-section {
+            margin-top: 2rem;
+        }
+
+        .input-label {
+            display: block;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            color: #e0e0e0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #ff6b35;
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .textarea-field {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #ff6b35, #ffa500);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== Processing View ===== */
+        .processing-view {
+            display: flex;
+            gap: 2rem;
+            min-height: 80vh;
+        }
+
+        .graph-panel {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .graph-title {
+            color: #ff6b35;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .graph-container {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-panel {
+            flex: 1;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-title {
+            color: #ff6b35;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-progress {
+            margin-bottom: 1.5rem;
+        }
+
+        .step-progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .step-progress-label .label {
+            color: #a0aec0;
+        }
+
+        .step-progress-label .status {
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ffa500);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .logs-section {
+            margin-top: auto;
+        }
+
+        .logs-header {
+            color: #ff6b35;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logs-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Monaco', monospace;
+            font-size: 0.85rem;
+        }
+
+        .log-entry {
+            color: #a0aec0;
+            margin-bottom: 0.5rem;
+            padding: 0.25rem 0;
+            border-left: 2px solid transparent;
+            padding-left: 0.75rem;
+        }
+
+        .log-entry.success {
+            color: #4ade80;
+            border-left-color: #4ade80;
+        }
+
+        .log-entry.error {
+            color: #ef4444;
+            border-left-color: #ef4444;
+        }
+
+        .log-entry.info {
+            color: #60a5fa;
+            border-left-color: #60a5fa;
+        }
+
+        .timestamp {
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        /* ===== Ontology Display ===== */
+        .ontology-display {
+            margin-top: 2rem;
+        }
+
+        .ontology-title {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .entity-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .entity-type {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .entity-type-name {
+            color: #ff6b35;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .entity-type-desc {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .relations-list {
+            margin-top: 1rem;
+        }
+
+        .relations-title {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .relation-item {
+            background: rgba(96, 165, 250, 0.1);
+            border-left: 2px solid #60a5fa;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: #a0aec0;
+        }
+
+        /* ===== Graph Visualization ===== */
+        .graph-node {
+            fill: #ff6b35;
+            stroke: #ffa500;
+            stroke-width: 2;
+            cursor: pointer;
+        }
+
+        .graph-node:hover {
+            r: 8;
+            filter: brightness(1.2);
+        }
+
+        .graph-link {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1.5;
+        }
+
+        .node-label {
+            fill: #fff;
+            font-size: 12px;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .dashboard-section {
+                flex-direction: column;
+            }
+
+            .hero-section {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .entity-types {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-row {
+                flex-direction: column;
+            }
+
+            .processing-view {
+                flex-direction: column;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .button-group button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #ffa500);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .view-mode-btn {
+            background: rgba(255, 107, 53, 0.1);
+            color: #ff6b35;
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            padding: 0.75rem 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .view-mode-btn.active {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #ff6b35;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.85rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- ===== HOME VIEW ===== -->
+        <div id="homeView" class="view">
+            <nav class="navbar">
+                <div class="nav-brand">MIROFISH</div>
+                <div class="nav-links">
+                    <a href="#" class="github-link">Visit GitHub <span class="arrow">↗</span></a>
+                </div>
+            </nav>
+
+            <div class="main-content">
+                <section class="hero-section">
+                    <div class="hero-left">
+                        <div class="tag-row">
+                            <span class="orange-tag">Multi-Agent Intelligence</span>
+                            <span class="version-text">v1.0.0</span>
+                        </div>
+                        
+                        <h1 class="main-title">
+                            Swarm Intelligence<br>
+                            <span class="gradient-text">Simulation Engine</span>
+                        </h1>
+                        
+                        <div class="hero-desc">
+                            <p>
+                                <strong>MiroFish</strong> empowers you to simulate <span class="highlight-orange">swarm dynamics</span> at <span class="highlight-code">enterprise scale</span>.
+                            </p>
+                            <p class="slogan-text">
+                                Insight from Scale<span class="blinking-cursor">_</span>
+                            </p>
+                        </div>
+                        
+                        <div class="decoration-square"></div>
+                    </div>
+                    
+                    <div class="hero-right">
+                        <div class="logo-container">🐠</div>
+                        <button class="scroll-down-btn" onclick="scrollToInput()">↓</button>
+                    </div>
+                </section>
+
+                <section class="dashboard-section">
+                    <div class="left-panel">
+                        <div class="panel-header">
+                            <span class="status-dot">■</span> System Status
+                        </div>
+                        
+                        <h2 class="section-title">System Ready</h2>
+                        <p class="section-desc">
+                            MiroFish is ready to simulate complex multi-agent systems with realistic behaviors and interactions.
+                        </p>
+                        
+                        <div class="metrics-row">
+                            <div class="metric-card">
+                                <div class="metric-value">$0</div>
+                                <div class="metric-label">API Cost</div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-value">100%</div>
+                                <div class="metric-label">Availability</div>
+                            </div>
+                        </div>
+
+                        <div class="steps-container">
+                            <div class="steps-header">
+                               <span class="diamond-icon">◇</span> Workflow Sequence
+                            </div>
+                            <div class="workflow-list">
+                                <div class="workflow-item">
+                                    <span class="step-num">01</span>
+                                    <div class="step-info">
+                                        <div class="step-title">Ontology Generation</div>
+                                        <div class="step-desc">Generate entity types and relationships from your prompt</div>
+                                    </div>
+                                </div>
+                                <div class="workflow-item">
+                                    <span class="step-num">02</span>
+                                    <div class="step-info">
+                                        <div class="step-title">Graph Building</div>
+                                        <div class="step-desc">Build knowledge graph with entities and connections</div>
+                                    </div>
+                                </div>
+                                <div class="workflow-item">
+                                    <span class="step-num">03</span>
+                                    <div class="step-info">
+                                        <div class="step-title">Simulation Setup</div>
+                                        <div class="step-desc">Configure agent behaviors and environmental parameters</div>
+                                    </div>
+                                </div>
+                                <div class="workflow-item">
+                                    <span class="step-num">04</span>
+                                    <div class="step-info">
+                                        <div class="step-title">Run Simulation</div>
+                                        <div class="step-desc">Execute multi-step simulation with real-time tracking</div>
+                                    </div>
+                                </div>
+                                <div class="workflow-item">
+                                    <span class="step-num">05</span>
+                                    <div class="step-info">
+                                        <div class="step-title">Analysis Report</div>
+                                        <div class="step-desc">Generate insights and interaction logs</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="right-panel">
+                        <div class="panel-header">
+                            <span class="status-dot">■</span> Start New Project
+                        </div>
+                        
+                        <h2 class="section-title">Create Simulation</h2>
+                        <p class="section-desc">
+                            Enter your simulation scenario and let MiroFish generate agents and simulate outcomes.
+                        </p>
+
+                        <div class="input-section">
+                            <label class="input-label">Project Name</label>
+                            <input type="text" id="projectName" class="input-field" placeholder="e.g., Market Adoption Scenario" value="Tech Market Dynamics">
+
+                            <label class="input-label">Simulation Requirement</label>
+                            <textarea id="simulationPrompt" class="input-field textarea-field" placeholder="Describe your simulation scenario...">What will be the impact of a major tech company announcing a breakthrough in artificial intelligence on market sentiment and competitor responses?</textarea>
+
+                            <label class="input-label">Additional Context (Optional)</label>
+                            <input type="text" id="context" class="input-field" placeholder="Any additional details...">
+
+                            <button class="submit-btn" onclick="startSimulation()">
+                                启动引擎 (Start Engine)
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ===== PROCESSING VIEW ===== -->
+        <div id="processingView" class="view hidden">
+            <nav class="navbar">
+                <div class="nav-brand">MIROFISH</div>
+                <div class="nav-links">
+                    <span style="color: #a0aec0; font-size: 0.9rem;">Step 1/5 • Ontology Generation</span>
+                </div>
+            </nav>
+
+            <div class="main-content">
+                <div class="processing-view">
+                    <!-- Graph Panel -->
+                    <div class="graph-panel">
+                        <div class="graph-title">Knowledge Graph Visualization</div>
+                        <div class="graph-container">
+                            <svg id="graphSvg"></svg>
+                        </div>
+                    </div>
+
+                    <!-- Info Panel -->
+                    <div class="info-panel">
+                        <div class="progress-section">
+                            <div class="progress-title">Processing Progress</div>
+                            
+                            <div class="step-progress">
+                                <div class="step-progress-label">
+                                    <span class="label">01 Ontology Generation</span>
+                                    <span class="status" id="step1Status">✓ Completed</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+
+                            <div class="step-progress">
+                                <div class="step-progress-label">
+                                    <span class="label">02 Graph Building</span>
+                                    <span class="status" id="step2Status">✓ Completed</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+
+                            <div class="step-progress">
+                                <div class="step-progress-label">
+                                    <span class="label">03 Simulation Setup</span>
+                                    <span class="status" id="step3Status">In Progress...</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%; animation: pulse 1.5s ease-in-out infinite;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ontology-display">
+                            <div class="ontology-title">Generated Ontology</div>
+                            
+                            <div class="entity-types">
+                                <div class="entity-type">
+                                    <div class="entity-type-name">Person</div>
+                                    <div class="entity-type-desc">Individual human actor</div>
+                                </div>
+                                <div class="entity-type">
+                                    <div class="entity-type-name">Organization</div>
+                                    <div class="entity-type-desc">Business or institution</div>
+                                </div>
+                                <div class="entity-type">
+                                    <div class="entity-type-name">Location</div>
+                                    <div class="entity-type-desc">Geographic place</div>
+                                </div>
+                                <div class="entity-type">
+                                    <div class="entity-type-name">Event</div>
+                                    <div class="entity-type-desc">Occurrence or incident</div>
+                                </div>
+                            </div>
+
+                            <div class="relations-list">
+                                <div class="relations-title">Entity Relationships</div>
+                                <div class="relation-item">WORKS_FOR: Person → Organization</div>
+                                <div class="relation-item">LOCATED_IN: Organization → Location</div>
+                                <div class="relation-item">PARTICIPATES_IN: Person → Event</div>
+                                <div class="relation-item">ANNOUNCES: Organization → Event</div>
+                                <div class="relation-item">COMPETES_WITH: Organization → Organization</div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value">15</div>
+                                <div class="stat-label">Generated Entities</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">28</div>
+                                <div class="stat-label">Relationships</div>
+                            </div>
+                        </div>
+
+                        <div class="logs-section">
+                            <div class="logs-header">
+                                System Logs
+                                <span style="cursor: pointer; font-size: 0.8rem;" onclick="clearLogs()">[Clear]</span>
+                            </div>
+                            <div class="logs-container" id="logsContainer"></div>
+                        </div>
+
+                        <div class="button-group">
+                            <button class="btn-secondary" onclick="goHome()">← Back to Home</button>
+                            <button class="btn-primary" onclick="advanceStep()">Next Step →</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+
+    <script>
+        // Dummy data
+        const dummyGraphData = {
+            nodes: [
+                { id: "person_1", name: "Alice Johnson", type: "Person", x: 100, y: 100 },
+                { id: "person_2", name: "Bob Smith", type: "Person", x: 200, y: 200 },
+                { id: "person_3", name: "Carol Lee", type: "Person", x: 150, y: 300 },
+                { id: "org_1", name: "TechCorp Inc", type: "Organization", x: 350, y: 150 },
+                { id: "org_2", name: "Innovation Labs", type: "Organization", x: 400, y: 300 },
+                { id: "loc_1", name: "Silicon Valley", type: "Location", x: 250, y: 400 },
+                { id: "evt_1", name: "Tech Conference", type: "Event", x: 50, y: 350 },
+                { id: "person_4", name: "David Chen", type: "Person", x: 450, y: 100 },
+                { id: "person_5", name: "Emma Wilson", type: "Person", x: 300, y: 50 },
+                { id: "org_3", name: "Global Solutions", type: "Organization", x: 500, y: 400 },
+                { id: "loc_2", name: "New York", type: "Location", x: 100, y: 450 },
+                { id: "evt_2", name: "Product Launch", type: "Event", x: 400, y: 50 },
+                { id: "person_6", name: "Frank Brown", type: "Person", x: 450, y: 250 },
+                { id: "org_4", name: "Research Institute", type: "Organization", x: 50, y: 150 },
+                { id: "evt_3", name: "Market Analysis", type: "Event", x: 200, y: 450 }
+            ],
+            edges: [
+                { source: "person_1", target: "org_1", label: "WORKS_FOR" },
+                { source: "person_2", target: "org_1", label: "WORKS_FOR" },
+                { source: "person_3", target: "org_2", label: "WORKS_FOR" },
+                { source: "org_1", target: "loc_1", label: "LOCATED_IN" },
+                { source: "person_1", target: "evt_1", label: "PARTICIPATES_IN" },
+                { source: "person_4", target: "org_3", label: "WORKS_FOR" },
+                { source: "person_5", target: "org_1", label: "WORKS_FOR" },
+                { source: "org_1", target: "evt_2", label: "ANNOUNCES" },
+                { source: "org_1", target: "org_2", label: "COMPETES_WITH" },
+                { source: "person_6", target: "org_4", label: "WORKS_FOR" },
+                { source: "org_2", target: "loc_1", label: "LOCATED_IN" },
+                { source: "org_3", target: "loc_2", label: "LOCATED_IN" },
+                { source: "person_2", target: "evt_2", label: "PARTICIPATES_IN" },
+                { source: "person_3", target: "evt_1", label: "PARTICIPATES_IN" },
+                { source: "org_1", target: "org_3", label: "COMPETES_WITH" },
+                { source: "person_4", target: "evt_3", label: "PARTICIPATES_IN" },
+                { source: "org_4", target: "evt_1", label: "ANNOUNCES" },
+                { source: "person_1", target: "evt_2", label: "PARTICIPATES_IN" },
+                { source: "person_6", target: "evt_3", label: "PARTICIPATES_IN" },
+                { source: "org_3", target: "org_4", label: "COMPETES_WITH" },
+                { source: "person_5", target: "evt_1", label: "PARTICIPATES_IN" },
+                { source: "org_2", target: "evt_2", label: "PARTICIPATES_IN" },
+                { source: "person_2", target: "evt_3", label: "PARTICIPATES_IN" },
+                { source: "person_3", target: "evt_2", label: "PARTICIPATES_IN" },
+                { source: "person_4", target: "evt_1", label: "PARTICIPATES_IN" },
+                { source: "person_5", target: "evt_3", label: "PARTICIPATES_IN" },
+                { source: "person_6", target: "evt_1", label: "PARTICIPATES_IN" },
+                { source: "org_4", target: "loc_2", label: "LOCATED_IN" }
+            ]
+        };
+
+        const systemLogs = [
+            { time: '17:30:49', msg: 'Project view initialized.', type: 'info' },
+            { time: '17:30:49', msg: 'Starting ontology generation: Analyzing prompt...', type: 'info' },
+            { time: '17:30:50', msg: 'Parsing simulation requirement...', type: 'info' },
+            { time: '17:30:51', msg: 'Generating entity types: Person, Organization, Location, Event', type: 'success' },
+            { time: '17:30:52', msg: 'Creating relationship definitions...', type: 'info' },
+            { time: '17:30:53', msg: 'Ontology generated successfully', type: 'success' },
+            { time: '17:30:54', msg: 'Starting graph build task...', type: 'info' },
+            { time: '17:30:55', msg: 'Extracting text content...', type: 'info' },
+            { time: '17:30:56', msg: 'Building knowledge graph structure...', type: 'info' },
+            { time: '17:30:57', msg: 'Creating entities and relationships...', type: 'info' },
+            { time: '17:30:58', msg: 'Graph build task started with ID: task_41249cff', type: 'info' },
+            { time: '17:30:59', msg: 'Polling task status...', type: 'info' },
+            { time: '17:31:00', msg: 'Task progress: 25%', type: 'info' },
+            { time: '17:31:02', msg: 'Task progress: 50%', type: 'info' },
+            { time: '17:31:04', msg: 'Task progress: 75%', type: 'info' },
+            { time: '17:31:05', msg: 'Graph build task completed', type: 'success' },
+            { time: '17:31:06', msg: 'Loading full graph data...', type: 'info' },
+            { time: '17:31:07', msg: 'Graph data loaded: 15 nodes, 28 edges', type: 'success' },
+            { time: '17:31:08', msg: 'Graph visualization updated', type: 'success' }
+        ];
+
+        let currentLogIndex = 0;
+        let currentStep = 1;
+
+        function updateLogs() {
+            const container = document.getElementById('logsContainer');
+            if (currentLogIndex < systemLogs.length) {
+                const log = systemLogs[currentLogIndex];
+                const logEl = document.createElement('div');
+                logEl.className = `log-entry ${log.type}`;
+                logEl.innerHTML = `<span class="timestamp">${log.time}</span> ${log.msg}`;
+                container.appendChild(logEl);
+                container.scrollTop = container.scrollHeight;
+                currentLogIndex++;
+            }
+        }
+
+        function initializeLogs() {
+            const container = document.getElementById('logsContainer');
+            container.innerHTML = '';
+            currentLogIndex = 0;
+            
+            // Add logs one by one
+            const interval = setInterval(() => {
+                updateLogs();
+                if (currentLogIndex >= systemLogs.length) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+
+        function drawGraph() {
+            const svg = document.getElementById('graphSvg');
+            svg.innerHTML = '';
+
+            const width = svg.clientWidth;
+            const height = svg.clientHeight;
+
+            // Draw edges first
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            
+            dummyGraphData.edges.forEach(edge => {
+                const source = dummyGraphData.nodes.find(n => n.id === edge.source);
+                const target = dummyGraphData.nodes.find(n => n.id === edge.target);
+
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', source.x);
+                line.setAttribute('y1', source.y);
+                line.setAttribute('x2', target.x);
+                line.setAttribute('y2', target.y);
+                line.setAttribute('class', 'graph-link');
+                g.appendChild(line);
+            });
+
+            // Draw nodes
+            dummyGraphData.nodes.forEach(node => {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', node.x);
+                circle.setAttribute('cy', node.y);
+                circle.setAttribute('r', '6');
+                circle.setAttribute('class', 'graph-node');
+                g.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', node.x);
+                text.setAttribute('y', node.y + 15);
+                text.setAttribute('class', 'node-label');
+                text.textContent = node.name.split(' ')[0];
+                g.appendChild(text);
+            });
+
+            svg.setAttribute('viewBox', `0 0 ${Math.max(width, 550)} ${Math.max(height, 500)}`);
+            svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            svg.appendChild(g);
+        }
+
+        function startSimulation() {
+            const projectName = document.getElementById('projectName').value;
+            const prompt = document.getElementById('simulationPrompt').value;
+
+            if (!projectName || !prompt) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            // Switch to processing view
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('processingView').classList.remove('hidden');
+
+            // Initialize graph and logs
+            drawGraph();
+            initializeLogs();
+        }
+
+        function goHome() {
+            document.getElementById('processingView').classList.add('hidden');
+            document.getElementById('homeView').classList.remove('hidden');
+            currentStep = 1;
+        }
+
+        function advanceStep() {
+            if (currentStep < 5) {
+                currentStep++;
+                alert(`Advanced to Step ${currentStep}/5`);
+            } else {
+                alert('All steps completed! This is a visualization demo.');
+            }
+        }
+
+        function scrollToInput() {
+            document.querySelector('.right-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearLogs() {
+            document.getElementById('logsContainer').innerHTML = '';
+            currentLogIndex = 0;
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            console.log('MiroFish Standalone Frontend loaded');
+        });
+    </script>
+</body>
+</html>
