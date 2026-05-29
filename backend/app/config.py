@@ -24,6 +24,9 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'mirofish-secret-key')
     DEBUG = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
+    # 测试模式配置 - 使用虚拟数据而不需要API密钥
+    TEST_MODE = os.environ.get('TEST_MODE', 'False').lower() == 'true'
+    
     # JSON配置 - 禁用ASCII转义，让中文直接显示（而不是 \uXXXX 格式）
     JSON_AS_ASCII = False
     
@@ -67,9 +70,10 @@ class Config:
     def validate(cls) -> list[str]:
         """验证必要配置"""
         errors: list[str] = []
-        if not cls.LLM_API_KEY:
-            errors.append("LLM_API_KEY 未配置")
-        if not cls.ZEP_API_KEY:
-            errors.append("ZEP_API_KEY 未配置")
+        if not cls.TEST_MODE:
+            if not cls.LLM_API_KEY:
+                errors.append("LLM_API_KEY 未配置 (可设置 TEST_MODE=true 使用虚拟数据测试)")
+            if not cls.ZEP_API_KEY:
+                errors.append("ZEP_API_KEY 未配置 (可设置 TEST_MODE=true 使用虚拟数据测试)")
         return errors
 

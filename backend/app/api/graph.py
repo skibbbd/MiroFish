@@ -155,6 +155,69 @@ def generate_ontology():
         project_name = request.form.get('project_name', 'Unnamed Project')
         additional_context = request.form.get('additional_context', '')
         
+        # TEST_MODE: 如果启用测试模式，返回虚拟本体
+        if Config.TEST_MODE:
+            logger.info("TEST_MODE: 返回虚拟本体定义")
+            project = ProjectManager.create_project(name=project_name)
+            project.simulation_requirement = simulation_requirement
+            
+            # 虚拟本体定义
+            mock_ontology = {
+                "entity_types": [
+                    {"name": "Person", "description": "Individual human"},
+                    {"name": "Organization", "description": "Business or institution"},
+                    {"name": "Location", "description": "Geographic location"},
+                    {"name": "Event", "description": "Occurrence or happening"}
+                ],
+                "edge_types": [
+                    {"name": "WORKS_FOR", "source": "Person", "target": "Organization"},
+                    {"name": "LOCATED_IN", "source": "Organization", "target": "Location"},
+                    {"name": "PARTICIPATES_IN", "source": "Person", "target": "Event"}
+                ],
+                "analysis_summary": f"Mock analysis for: {simulation_requirement[:100]}"
+            }
+            
+            project.ontology = {
+                "entity_types": mock_ontology["entity_types"],
+                "edge_types": mock_ontology["edge_types"]
+            }
+            project.analysis_summary = mock_ontology["analysis_summary"]
+            project.status = ProjectStatus.ONTOLOGY_GENERATED
+            project.files = [{"filename": "test_file.txt", "size": 1024}]
+            project.total_text_length = 1024
+            
+            # 保存虚拟提取的文本
+            mock_text = """
+            This is a test document for MiroFish simulation.
+            
+            Entities:
+            - Alice Johnson (Person)
+            - Bob Smith (Person) 
+            - TechCorp Inc (Organization)
+            - New York (Location)
+            - Tech Conference (Event)
+            
+            Relationships:
+            - Alice works for TechCorp
+            - Bob works for TechCorp
+            - TechCorp is located in New York
+            - Alice and Bob participate in Tech Conference
+            """
+            ProjectManager.save_extracted_text(project.project_id, mock_text)
+            ProjectManager.save_project(project)
+            
+            return jsonify({
+                "success": True,
+                "data": {
+                    "project_id": project.project_id,
+                    "project_name": project.name,
+                    "ontology": project.ontology,
+                    "analysis_summary": project.analysis_summary,
+                    "files": project.files,
+                    "total_text_length": project.total_text_length
+                }
+            })
+        
         logger.debug(f"项目名称: {project_name}")
         logger.debug(f"模拟需求: {simulation_requirement[:100]}...")
         
@@ -285,7 +348,7 @@ def build_graph():
         
         # 检查配置
         errors = []
-        if not Config.ZEP_API_KEY:
+        if not Config.TEST_MODE and not Config.ZEP_API_KEY:
             errors.append(t('api.zepApiKeyMissing'))
         if errors:
             logger.error(f"配置错误: {errors}")
@@ -385,6 +448,43 @@ def build_graph():
                     status=TaskStatus.PROCESSING,
                     message=t('progress.initGraphService')
                 )
+                
+                # TEST_MODE: 如果启用测试模式，使用虚拟图谱数据
+                if Config.TEST_MODE:
+                    build_logger.info(f"[{task_id}] TEST_MODE: 使用虚拟图谱数据")
+                    import uuid
+                    graph_id = f"test_graph_{uuid.uuid4().hex[:8]}"
+                    project.graph_id = graph_id
+                    
+                    # 更新进度
+                    for progress in [20, 40, 60, 80]:
+                        task_manager.update_task(task_id, message=f"Mock building (progress: {progress}%)", progress=progress)
+                        import time
+                        time.sleep(0.1)
+                    
+                    # 虚拟图谱数据
+                    graph_data = {
+                        "graph_id": graph_id,
+                        "name": graph_name,
+                        "node_count": 50,
+                        "edge_count": 100,
+                        "entities": [
+                            {"id": f"entity_{i}", "name": f"Entity {i}", "type": "Person"} 
+                            for i in range(10)
+                        ]
+                    }
+                    
+                    project.status = ProjectStatus.GRAPH_COMPLETED
+                    ProjectManager.save_project(project)
+                    
+                    task_manager.update_task(
+                        task_id,
+                        status=TaskStatus.COMPLETED,
+                        message=f"Mock graph built: {graph_name}",
+                        progress=100
+                    )
+                    build_logger.info(f"[{task_id}] TEST_MODE: 虚拟图谱构建完成")
+                    return
                 
                 # 创建图谱构建服务
                 builder = GraphBuilderService(api_key=Config.ZEP_API_KEY)
@@ -572,6 +672,16 @@ def get_graph_data(graph_id: str):
     获取图谱数据（节点和边）
     """
     try:
+        # TEST_MODE: 如果启用测试模式，返回虚拟图谱数据
+        if Config.TEST_MODE:
+            logger.info(f"TEST_MODE: 返回虚拟图谱数据: {graph_id}")
+            from ..services.test_data_generator import TestDataGenerator
+            graph_data = TestDataGenerator.generate_mock_graph_data(graph_id)
+            return jsonify({
+                "success": True,
+                "data": graph_data
+            })
+        
         if not Config.ZEP_API_KEY:
             return jsonify({
                 "success": False,

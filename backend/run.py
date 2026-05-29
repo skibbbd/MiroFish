@@ -4,6 +4,14 @@ MiroFish Backend 启动入口
 
 import os
 import sys
+from pathlib import Path
+
+# 加载 .env 文件
+from dotenv import load_dotenv
+env_file = Path(__file__).parent / '.env'
+if env_file.exists():
+    load_dotenv(env_file)
+    print(f"已加载 .env 文件: {env_file}")
 
 # 解决 Windows 控制台中文乱码问题：在所有导入之前设置 UTF-8 编码
 if sys.platform == 'win32':
